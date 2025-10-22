@@ -15,11 +15,7 @@
       "src": "/(.*)",
       "dest": "/dist/$1"
     }
-  ],
-  "env": {
-    "VITE_CIRCLE_API_TOKEN": "@vite_circle_api_token",
-    "VITE_CIRCLE_COMMUNITY_ID": "@vite_circle_community_id"
-  }
+  ]
 }
 
 
