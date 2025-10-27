@@ -20,8 +20,17 @@ export default async function handler(req, res) {
     const API_TOKEN = process.env.VITE_CIRCLE_API_TOKEN;
     const COMMUNITY_ID = process.env.VITE_CIRCLE_COMMUNITY_ID;
     
+    console.log('🔑 Verificando variáveis:', {
+      hasToken: !!API_TOKEN,
+      tokenLength: API_TOKEN?.length,
+      hasCommunityId: !!COMMUNITY_ID,
+      communityId: COMMUNITY_ID
+    });
+    
     if (!API_TOKEN || !COMMUNITY_ID) {
-      throw new Error('Token ou Community ID não configurados');
+      const errorMsg = `Token ou Community ID não configurados. Token: ${!!API_TOKEN}, Community ID: ${!!COMMUNITY_ID}`;
+      console.error('❌', errorMsg);
+      throw new Error(errorMsg);
     }
 
     const response = await fetch(
@@ -37,7 +46,11 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ Erro da API Circle:', errorText);
+      console.error('❌ Erro da API Circle:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText.substring(0, 500)
+      });
       throw new Error(`Circle API Error ${response.status}: ${errorText}`);
     }
 
