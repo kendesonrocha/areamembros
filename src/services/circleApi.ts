@@ -12,7 +12,11 @@ interface CircleApiResponse<T> {
 // Debug: Verificar configuração
 console.log('🔧 API Config:', {
   backendUrl: BACKEND_URL,
-  useBackend: USE_BACKEND
+  useBackend: USE_BACKEND,
+  env: {
+    VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL,
+    VITE_USE_BACKEND: import.meta.env.VITE_USE_BACKEND
+  }
 })
 
 // Dados mockados realistas para fallback (caso backend não esteja disponível)
@@ -25,19 +29,32 @@ const MOCK_STATS = {
 // Função para testar conectividade com o backend
 export async function testCircleConnection(): Promise<CircleApiResponse<any>> {
   try {
+    const testUrl = `${BACKEND_URL}/api/circle/test`
     console.log('🧪 Testando conexão com backend...')
+    console.log('📍 URL completa:', testUrl)
     
     if (!USE_BACKEND) {
       throw new Error('Backend desabilitado')
     }
 
-    const response = await fetch(`${BACKEND_URL}/api/circle/test`)
+    const response = await fetch(testUrl)
+    
+    console.log('📡 Response status:', response.status)
+    console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()))
     
     if (!response.ok) {
+      const errorText = await response.text()
+      console.log('📡 Response body (error):', errorText.substring(0, 200))
       throw new Error(`Backend Error ${response.status}`)
     }
     
-    const result = await response.json()
+    const contentType = response.headers.get('content-type')
+    console.log('📡 Content-Type:', contentType)
+    
+    const responseText = await response.text()
+    console.log('📡 Response body (first 200 chars):', responseText.substring(0, 200))
+    
+    const result = JSON.parse(responseText)
     console.log('✅ Backend conectado:', result)
     return result
   } catch (error) {
