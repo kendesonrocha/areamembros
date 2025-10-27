@@ -1,6 +1,13 @@
 // src/services/circleApi.ts
 // Usar backend local em vez de chamar Circle API diretamente
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'
+let BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'
+
+// Garantir que a URL tenha protocolo (https:// ou http://)
+if (BACKEND_URL && !BACKEND_URL.startsWith('http://') && !BACKEND_URL.startsWith('https://')) {
+  BACKEND_URL = `https://${BACKEND_URL}`
+  console.warn('⚠️ URL do backend não tinha protocolo. Adicionado https://')
+}
+
 const USE_BACKEND = import.meta.env.VITE_USE_BACKEND !== 'false' // true por padrão
 
 interface CircleApiResponse<T> {
