@@ -68,7 +68,7 @@ export async function getCommunityStats(): Promise<CircleApiResponse<{
       }
     }
 
-    const response = await fetch(`${BACKEND_URL}/api/circle/community/stats`)
+    const response = await fetch(`${BACKEND_URL}/api/circle/stats`)
     
     if (!response.ok) {
       throw new Error(`Backend Error ${response.status}`)

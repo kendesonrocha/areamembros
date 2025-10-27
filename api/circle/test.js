@@ -2,6 +2,18 @@
 const CIRCLE_API_BASE = 'https://app.circle.so/api/v1';
 
 export default async function handler(req, res) {
+  // Permitir CORS
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle OPTIONS request
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   try {
     console.log('🧪 Testando conexão com Circle API...');
     
