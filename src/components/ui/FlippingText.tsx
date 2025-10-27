@@ -20,7 +20,7 @@ const FlippingText = ({
     const deletingSpeed = 50; // Speed for deleting characters
     const pauseBeforeDelete = 1000; // Pause before starting to delete
 
-    let timeout: NodeJS.Timeout;
+    let timeout: ReturnType<typeof setTimeout>;
 
     if (!isDeleting && visibleCharacters < currentWord.length) {
       // Typing mode - add characters
