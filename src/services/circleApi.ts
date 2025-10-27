@@ -98,14 +98,23 @@ export async function getCommunityStats(): Promise<CircleApiResponse<{
       throw new Error(`Backend Error ${response.status}`)
     }
     
-    const result = await response.json()
-    
-    if (result.success) {
-      console.log('✅ Estatísticas reais carregadas do backend:', result.data)
-      return result
-    } else {
-      throw new Error(result.error || 'Erro ao buscar estatísticas')
-    }
+       const result = await response.json()
+           
+           if (result.success) {
+             if (result.mock) {
+               console.log('ℹ️ Estatísticas mockadas carregadas:', result.data)
+               return {
+                 success: true,
+                 data: result.data,
+                 error: result.message || 'Dados de exemplo'
+               }
+             } else {
+               console.log('✅ Estatísticas reais carregadas do backend:', result.data)
+               return result
+             }
+           } else {
+             throw new Error(result.error || 'Erro ao buscar estatísticas')
+           }
   } catch (error) {
     console.error('❌ Erro ao buscar estatísticas:', error)
     

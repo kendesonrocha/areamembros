@@ -8,7 +8,7 @@ export function Community() {
   const { stats, loading, error } = useCommunityStats()
 
   // Verificar se estamos usando dados simulados
-  const isUsingMockData = stats.members_count > 0 && error?.includes('simulados')
+  const isUsingMockData = stats.members_count > 0 && (error?.includes('simulados') || error?.includes('exemplo'))
 
   return (
     <div className="space-y-6">
@@ -22,14 +22,21 @@ export function Community() {
 
       {/* Aviso de dados simulados */}
       {isUsingMockData && (
-        <Card className="border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20">
+        <Card className="border-blue-500 bg-blue-50 dark:bg-blue-900/20">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-2">
-              <span className="text-yellow-600 dark:text-yellow-400">⚠️</span>
-              <p className="text-yellow-800 dark:text-yellow-200 text-sm">
-                <strong>Dados Simulados:</strong> A API do Circle.so está bloqueada por CORS. 
-                Os números abaixo são exemplos realistas da sua comunidade.
-              </p>
+            <div className="flex items-start gap-3">
+              <span className="text-blue-600 dark:text-blue-400 text-xl">ℹ️</span>
+              <div>
+                <p className="text-blue-800 dark:text-blue-200 text-sm font-semibold mb-1">
+                  Estatísticas de Exemplo
+                </p>
+                <p className="text-blue-700 dark:text-blue-300 text-sm mb-2">
+                  O Circle.so não fornece API pública para estatísticas. Os números exibidos são ilustrativos.
+                </p>
+                <p className="text-blue-600 dark:text-blue-400 text-xs">
+                  💡 Clique em "Abrir Comunidade" para ver os dados reais em tempo real.
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -107,7 +114,7 @@ export function Community() {
         </Card>
       </div>
 
-      {error && (
+      {error && !isUsingMockData && (
         <Card className="border-red-500">
           <CardContent className="pt-6">
             <div className="space-y-3">

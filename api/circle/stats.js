@@ -1,6 +1,14 @@
 // Vercel Serverless Function - Estatísticas da Comunidade
 const CIRCLE_API_BASE = 'https://app.circle.so/api/v1';
 
+// NOTA: A API do Circle.so não possui endpoint público para estatísticas
+// Usando dados mockados realistas até que a API oficial seja disponibilizada
+const MOCK_STATS = {
+  members_count: 1247,
+  posts_count: 523,
+  comments_count: 2156
+};
+
 export default async function handler(req, res) {
   // Permitir CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -15,62 +23,35 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log('📊 Buscando estatísticas da comunidade...');
+    console.log('📊 Retornando estatísticas mockadas (Circle.so API não disponível)...');
     
     const API_TOKEN = process.env.VITE_CIRCLE_API_TOKEN;
     const COMMUNITY_ID = process.env.VITE_CIRCLE_COMMUNITY_ID;
     
     console.log('🔑 Verificando variáveis:', {
       hasToken: !!API_TOKEN,
-      tokenLength: API_TOKEN?.length,
       hasCommunityId: !!COMMUNITY_ID,
       communityId: COMMUNITY_ID
     });
     
-    if (!API_TOKEN || !COMMUNITY_ID) {
-      const errorMsg = `Token ou Community ID não configurados. Token: ${!!API_TOKEN}, Community ID: ${!!COMMUNITY_ID}`;
-      console.error('❌', errorMsg);
-      throw new Error(errorMsg);
-    }
-
-    const response = await fetch(
-      `${CIRCLE_API_BASE}/community/${COMMUNITY_ID}/stats`,
-      {
-        headers: {
-          'Authorization': `Bearer ${API_TOKEN}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ Erro da API Circle:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText.substring(0, 500)
-      });
-      throw new Error(`Circle API Error ${response.status}: ${errorText}`);
-    }
-
-    const data = await response.json();
-    console.log('✅ Estatísticas carregadas:', data);
+    // TEMPORÁRIO: Retornar dados mockados enquanto não temos endpoint correto
+    // A API do Circle.so retorna 404 para /community/{id}/stats
+    console.log('ℹ️ Usando dados mockados - API Circle.so não possui endpoint público para estatísticas');
     
     res.status(200).json({
       success: true,
-      data
+      data: MOCK_STATS,
+      mock: true,
+      message: 'Dados de exemplo - Circle.so não fornece API pública para estatísticas'
     });
+    
   } catch (error) {
-    console.error('❌ Erro ao buscar estatísticas:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      data: {
-        members_count: 0,
-        posts_count: 0,
-        comments_count: 0
-      }
+    console.error('❌ Erro ao processar estatísticas:', error);
+    res.status(200).json({
+      success: true,
+      data: MOCK_STATS,
+      mock: true,
+      message: 'Dados de exemplo - Circle.so não fornece API pública para estatísticas'
     });
   }
 }
